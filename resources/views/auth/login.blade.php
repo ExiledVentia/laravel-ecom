@@ -1,3 +1,15 @@
-<div>
-    <!-- Nothing in life is to be feared, it is only to be understood. Now is the time to understand more, so that we may fear less. - Marie Curie -->
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>stecu stecu</h1>
+    <a href="{{ url('/auth/redirect/google') }}" class="btn btn-danger">Login with Google</a>
+    <a href="{{ url('/auth/redirect/github') }}" class="btn btn-dark">Login with GitHub</a>
+
+</body>
+</html>
