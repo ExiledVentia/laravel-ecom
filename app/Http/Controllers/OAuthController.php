@@ -9,34 +9,32 @@ use Illuminate\Support\Facades\Auth;
 
 class OAuthController extends Controller
 {
-    public function redirect($provider)
+    public function redirect()
     {
-        return Socialite::driver($provider)->redirect();
+        return Socialite::driver('google')->redirect();
     }
 
-    public function callback($provider)
+    public function callback()
     {
         try {
-            $socialUser = Socialite::driver($provider)->user();
+            $googleUser = Socialite::driver('google')->stateless()->user(); // If this shows an error just ignore it.
 
-            $user = User::where('oauth_id', $socialUser->getId())
-                ->where('oauth_provider', $provider)
-                ->first();
+            $user = User::where('oauth_id', $googleUser->getId())->first();
 
             if (!$user) {
-                $user = User::where('email', $socialUser->getEmail())->first();
+                $user = User::where('email', $googleUser->getEmail())->first();
 
                 if ($user) {
                     $user->update([
-                        'oauth_id' => $socialUser->getId(),
-                        'oauth_provider' => $provider,
+                        'oauth_id' => $googleUser->getId(),
+                        'oauth_provider' => 'google',
                     ]);
                 } else {
                     $user = User::create([
-                        'name' => $socialUser->getName(),
-                        'email' => $socialUser->getEmail(),
-                        'oauth_id' => $socialUser->getId(),
-                        'oauth_provider' => $provider,
+                        'name' => $googleUser->getName(),
+                        'email' => $googleUser->getEmail(),
+                        'oauth_id' => $googleUser->getId(),
+                        'oauth_provider' => 'google',
                         'password' => bcrypt(str()->random(16)),
                     ]);
                 }
@@ -45,7 +43,7 @@ class OAuthController extends Controller
             Auth::login($user);
             return redirect('/');
         } catch (\Exception $e) {
-            return redirect('/login')->with('error', 'OAuth login failed.');
+            return redirect('auth/login')->with('error', 'Google Login Failed.');
         }
     }
 }
