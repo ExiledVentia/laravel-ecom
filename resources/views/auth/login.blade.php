@@ -9,7 +9,6 @@
 <body>
     <h1>stecu stecu</h1>
     <a href="{{ url('/auth/redirect/google') }}" class="btn btn-danger">Login with Google</a>
-    <a href="{{ url('/auth/redirect/github') }}" class="btn btn-dark">Login with GitHub</a>
 
 </body>
 </html>

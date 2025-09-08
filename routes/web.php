@@ -14,4 +14,7 @@ Route::get('/', function () {
 route::get('products/{products}', [ProductController::class, 'show']);
 Route::get('/auth/redirect/{provider}', [OAuthController::class, 'redirect']);
 Route::get('/auth/callback/{provider}', [OAuthController::class, 'callback']);
-route::get('auth/login', [AuthController::class, 'login']);
+route::get('auth/login', [AuthController::class, 'showLogin'])->name('login');
+route::post('auth/login', [AuthController::class, 'login']);
+route::get('auth/register', [AuthController::class, 'showRegister'])->name('register');
+route::post('auth/register', [AuthController::class, 'register']);
