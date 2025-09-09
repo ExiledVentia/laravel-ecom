@@ -31,7 +31,7 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password'])
         ]);
 
-        return redirect('/'); // This will be moved to Dashboard later when I do routing.
+        return redirect()->route('dashboard');
     }
 
     public function showLogin()
@@ -48,11 +48,19 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('/');
+            return redirect()->intended('dashboard');
         }
 
         return back()->withErrors([
             'email' => 'Email not found.',
         ])->onlyInput('email');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
     }
 }

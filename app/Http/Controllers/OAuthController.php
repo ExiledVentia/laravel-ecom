@@ -41,7 +41,7 @@ class OAuthController extends Controller
             }
 
             Auth::login($user);
-            return redirect('/');
+            return redirect()->route('dashboard');
         } catch (\Exception $e) {
             return redirect('auth/login')->with('error', 'Google Login Failed.');
         }
