@@ -8,58 +8,84 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan semua produk (public list).
      */
     public function index()
     {
-        //
+        $products = Product::latest()->paginate(10);
+        return view('products.index', compact('products'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan detail produk (public).
+     */
+    public function show($id)
+    {
+        $product = Product::findOrFail($id);
+        return view('products.show', compact('product'));
+    }
+
+    /**
+     * Menampilkan form tambah produk (admin).
      */
     public function create()
     {
-        //
+        return view('products.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Simpan produk baru (admin).
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+        ]);
+
+        Product::create($request->only('name', 'price', 'stock'));
+
+        return redirect()->route('products.index')
+            ->with('success', 'Produk berhasil ditambahkan.');
     }
 
     /**
-     * Display the specified resource.
+     * Menampilkan form edit produk (admin).
      */
-    public function show(Product $product)
+    public function edit($id)
     {
-        //
+        $product = Product::findOrFail($id);
+        return view('products.edit', compact('product'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Update data produk (admin).
      */
-    public function edit(Product $product)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'name'  => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+        ]);
+
+        $product = Product::findOrFail($id);
+        $product->update($request->only('name', 'price', 'stock'));
+
+        return redirect()->route('products.index')
+            ->with('success', 'Produk berhasil diperbarui.');
     }
 
     /**
-     * Update the specified resource in storage.
+     * Hapus produk (admin).
      */
-    public function update(Request $request, Product $product)
+    public function destroy($id)
     {
-        //
-    }
+        $product = Product::findOrFail($id);
+        $product->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
+        return redirect()->route('products.index')
+            ->with('success', 'Produk berhasil dihapus.');
     }
 }
