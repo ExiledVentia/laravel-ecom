@@ -17,19 +17,19 @@ Route::get('/', function () {
 route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // Product Routes
-route::get('products/{products}', [ProductController::class, 'show']);
+route::get('products/{products}', [ProductController::class, 'show'])->name('products.show');
 
 // Auth Routes
 Route::get('/auth/redirect/{provider}', [OAuthController::class, 'redirect']);
 Route::get('/auth/callback/{provider}', [OAuthController::class, 'callback']);
-route::get('auth/login', [AuthController::class, 'showLogin'])->name('login');
-route::post('auth/login', [AuthController::class, 'login']);
-route::get('auth/register', [AuthController::class, 'showRegister'])->name('register');
-route::post('auth/register', [AuthController::class, 'register']);
+route::get('auth/login', [AuthController::class, 'showLogin']);
+route::post('auth/login', [AuthController::class, 'login'])->name('login');
+route::get('auth/register', [AuthController::class, 'showRegister']);
+route::post('auth/register', [AuthController::class, 'register'])->name('register');
 route::post('auth/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Profile Routes
 route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-route::put('/password',[ProfileController::class, 'updatePassword'])->name('password.update');
+
 
 

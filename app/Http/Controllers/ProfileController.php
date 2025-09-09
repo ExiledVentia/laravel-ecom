@@ -19,27 +19,18 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
 
         $user->name = $validated['name'];
         $user->email = $validated['email'];
 
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
 
         $user->save();
 
         return redirect()->route('dashboard')->with('success', 'Profile Updated');
-    }
-
-    public function updatePassword(Request $request)
-    {
-        $validated = $request->validate([
-            'password' => ['required', 'confirmed', Password::min(8)],
-        ]);
-
-        Auth::user()->update([
-            'password' => Hash::make($validated['password'])
-        ]);
-
-        return redirect()->route('dashboard')->with('success', 'Password changed successfully!');
     }
 }

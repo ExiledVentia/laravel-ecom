@@ -31,7 +31,7 @@ class AuthController extends Controller
             'password' => Hash::make($validated['password'])
         ]);
 
-        return redirect()->route('dashboard');
+        return redirect()->route('login');
     }
 
     public function showLogin()
@@ -52,8 +52,8 @@ class AuthController extends Controller
         }
 
         return back()->withErrors([
-            'email' => 'Email not found.',
-        ])->onlyInput('email');
+            'password' => 'The provided credentials do not match our records.',
+        ]);
     }
 
     public function logout(Request $request)
@@ -61,6 +61,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return redirect('login');
     }
 }
