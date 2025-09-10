@@ -11,12 +11,11 @@ use Laravel\Socialite\Facades\Socialite;
 // PUT THESE IN GROUPS LATER
 
 // Base Routes
-Route::get('/', function () {
-    return view('products.index');
-});
+Route::get('/', [ProductController::class, 'index'])->name('products.index');
 route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // Product Routes
+Route::resource('products', ProductController::class)->except('index', 'show');
 route::get('products/{products}', [ProductController::class, 'show'])->name('products.show');
 
 // Auth Routes
