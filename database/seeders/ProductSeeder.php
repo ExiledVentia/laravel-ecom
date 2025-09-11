@@ -22,7 +22,7 @@ class ProductSeeder extends Seeder
                 'image' => 'https://picsum.photos/640/480?random='. $index,
                 'name' => $faker->words(3, true),
                 'price' => $faker->numberBetween(10000, 1000000),
-                'stock' => $faker->numberBetween(0, 100),
+                'stock' => $faker->numberBetween(0, 250),
             ]);
         }
     }
