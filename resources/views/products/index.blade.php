@@ -1,13 +1,21 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('content')
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
     <h1>Daftar Produk</h1>
 
-    @if(session('success'))
+    @if (session('success'))
         <p>{{ session('success') }}</p>
     @endif
 
-    @if($products->isEmpty())
+    @if ($products->isEmpty())
         <p>Belum ada produk.</p>
     @else
         <table border="1" cellpadding="8" cellspacing="0">
@@ -21,7 +29,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($products as $product)
+                @foreach ($products as $product)
                     <tr>
                         <td>{{ $product->id }}</td>
                         <td>{{ $product->name }}</td>
@@ -30,10 +38,12 @@
                         <td>
                             <a href="{{ route('products.show', $product->id) }}">Detail</a> |
                             <a href="{{ route('products.edit', $product->id) }}">Edit</a> |
-                            <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline;">
+                            <form action="{{ route('products.destroy', $product->id) }}" method="POST"
+                                style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" onclick="return confirm('Yakin hapus produk ini?')">Hapus</button>
+                                <button type="submit"
+                                    onclick="return confirm('Yakin hapus produk ini?')">Hapus</button>
                             </form>
                         </td>
                     </tr>
@@ -47,4 +57,6 @@
 
     <br>
     <a href="{{ route('products.create') }}">+ Tambah Produk</a>
-@endsection
+</body>
+
+</html>
