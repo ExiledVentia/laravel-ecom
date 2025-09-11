@@ -1,14 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.master')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-
-<body>
+@section('content')
     <h1>Daftar Produk</h1>
 
     @if (session('success'))
@@ -42,8 +34,7 @@
                                 style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit"
-                                    onclick="return confirm('Yakin hapus produk ini?')">Hapus</button>
+                                <button type="submit" onclick="return confirm('Yakin hapus produk ini?')">Hapus</button>
                             </form>
                         </td>
                     </tr>
@@ -57,6 +48,4 @@
 
     <br>
     <a href="{{ route('products.create') }}">+ Tambah Produk</a>
-</body>
-
-</html>
+@endsection

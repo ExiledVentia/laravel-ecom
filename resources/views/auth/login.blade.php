@@ -1,14 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.master')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Looooooooooooooooooooogin</title>
-</head>
-
-<body>
+@section('content')
     <h1>stecu stecu</h1>
     <form method="POST" action="{{ route('login') }}">
         @csrf
@@ -37,7 +29,4 @@
     <p>
         <a href="{{ url('/auth/redirect/google') }}" class="btn btn-danger">Login with Google</a>
     </p>
-
-</body>
-
-</html>
+@endsection

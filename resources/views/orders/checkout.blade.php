@@ -1,5 +1,5 @@
 
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('content')
     <h1>Checkout</h1>

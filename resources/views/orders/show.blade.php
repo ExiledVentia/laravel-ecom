@@ -1,5 +1,5 @@
 
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('content')
     <h1>Detail Order #{{ $order->id }}</h1>

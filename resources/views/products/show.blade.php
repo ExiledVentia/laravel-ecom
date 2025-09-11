@@ -1,12 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
+@extends('layouts.master')
+
+@section('content')
     <h1>Detail Produk</h1>
     <img src="{{ $product->image }}" alt="{{ $product->name }}" width="400">
     <p><strong>Nama:</strong> {{ $product->name }}</p>
@@ -23,7 +17,7 @@
         <form action="{{ route('orders.store') }}" method="POST">
             @csrf
             <input type="hidden" name="product_id" value="{{ $product->id }}">
-            
+
             <label for="quantity">Jumlah:</label>
             <input type="number" name="quantity" id="quantity" min="1" value="1" required>
 
@@ -33,6 +27,4 @@
     @else
         <p><a href="{{ route('login') }}">Login dulu</a> untuk membeli produk ini.</p>
     @endauth
-</body>
-</html>
-
+@endsection
