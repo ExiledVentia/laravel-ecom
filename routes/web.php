@@ -5,30 +5,56 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
 
-// PUT THESE IN GROUPS LATER
-
-// Base Routes
+// --------------------
+// BASE ROUTES
+// --------------------
 Route::get('/', [ProductController::class, 'index'])->name('products.index');
-route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-// Product Routes
-Route::resource('products', ProductController::class)->except('index', 'show');
-route::get('products/{products}', [ProductController::class, 'show'])->name('products.show');
+// --------------------
+// PRODUCT ROUTES
+// --------------------
+// CRUD admin (create/edit/delete) - index & show didefinisikan terpisah di bawah
+Route::resource('products', ProductController::class)->except(['index', 'show']);
+// Detail produk (public)
+Route::get('products/{product}', [ProductController::class, 'show'])->name('products.show');
 
-// Auth Routes
-Route::get('/auth/redirect/{provider}', [OAuthController::class, 'redirect']);
-Route::get('/auth/callback/{provider}', [OAuthController::class, 'callback']);
-route::get('auth/login', [AuthController::class, 'showLogin']);
-route::post('auth/login', [AuthController::class, 'login'])->name('login');
-route::get('auth/register', [AuthController::class, 'showRegister']);
-route::post('auth/register', [AuthController::class, 'register'])->name('register');
-route::post('auth/logout', [AuthController::class, 'logout'])->name('logout');
+// --------------------
+// AUTH ROUTES
+// --------------------
+// OAuth (Google / GitHub)
+Route::get('/auth/redirect/{provider}', [OAuthController::class, 'redirect'])->name('oauth.redirect');
+Route::get('/auth/callback/{provider}', [OAuthController::class, 'callback'])->name('oauth.callback');
 
-// Profile Routes
-route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+// Manual login / register (simple)
+Route::get('/auth/login', [AuthController::class, 'showLogin'])->name('login.form');
+Route::post('/auth/login', [AuthController::class, 'login'])->name('login');
 
+Route::get('/auth/register', [AuthController::class, 'showRegister'])->name('register.form');
+Route::post('/auth/register', [AuthController::class, 'register'])->name('register');
 
+// --------------------
+// ORDER & CHECKOUT (protected)
+// --------------------
+Route::middleware('auth')->group(function () {
+    // Checkout (form & action)
+    Route::get('/checkout', [OrderController::class, 'createCheckout'])->name('checkout.form');
+    Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout');
 
+    // Orders (user)
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+
+    // Profile & logout (auth required)
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/auth/logout', [AuthController::class, 'logout'])->name('logout');
+});
+
+// --------------------
+// PAYMENT CALLBACK (public)
+// --------------------
+// Xendit akan POST ke endpoint ini. Jangan beri middleware 'auth'.
+Route::post('/payment/callback', [OrderController::class, 'callback'])->name('payment.callback');
