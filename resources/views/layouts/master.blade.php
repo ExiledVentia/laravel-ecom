@@ -13,7 +13,7 @@
         <a href="{{ url('/orders') }}" style="margin-right:15px; color:white;">Orders</a>
 
         @auth
-            <span style="margin-right:15px;">Hi, {{ Auth::user()->name }}</span>
+            <a style="margin-right:15px;" href="{{ route('dashboard') }}">Hi, {{ Auth::user()->name }}</a>
             <form action="{{ route('logout') }}" method="POST" style="display:inline">
                 @csrf
                 <button type="submit">Logout</button>

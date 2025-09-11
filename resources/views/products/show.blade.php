@@ -14,7 +14,7 @@
 
     @auth
         <h3>Checkout Produk Ini</h3>
-        <form action="{{ route('orders.store') }}" method="POST">
+        <form action="{{ route('checkout.process') }}" method="POST">
             @csrf
             <input type="hidden" name="product_id" value="{{ $product->id }}">
 

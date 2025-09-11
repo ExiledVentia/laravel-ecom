@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
 
 // --------------------
@@ -45,8 +46,7 @@ Route::post('/auth/register', [AuthController::class, 'register'])->name('regist
 // --------------------
 Route::middleware('auth')->group(function () {
     // Checkout (form & action)
-    Route::get('/checkout', [OrderController::class, 'createCheckout'])->name('checkout.form');
-    Route::post('/checkout', [OrderController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('checkout.process');
 
     // Orders (user)
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');

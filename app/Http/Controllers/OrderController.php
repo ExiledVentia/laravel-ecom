@@ -35,6 +35,11 @@ class OrderController extends Controller
         return view('orders.show', compact('order'));
     }
 
+    public function store()
+    {
+        
+    }
+
     /**
      * Form checkout (pilih produk & jumlah).
      */
@@ -73,7 +78,7 @@ class OrderController extends Controller
         ]);
 
         // Buat invoice di Xendit
-        $response = Http::withBasicAuth(env('XENDIT_SECRET_KEY'), '')
+        $response = Http::withBasicAuth(env('XENDIT_SECRET_KEYS'), '')
             ->post('https://api.xendit.co/v2/invoices', [
                 'external_id' => 'order-' . $order->id,
                 'amount'      => $total,

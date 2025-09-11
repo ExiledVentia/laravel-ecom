@@ -5,68 +5,63 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
-    public function checkout(Request $request)
-    {
-        // Ambil data cart dari request (sementara sederhana)
-        $products = $request->products; // array [id => qty]
 
-        $total = 0;
-        foreach ($products as $product) {
-            $total += $product['price'] * $product['quantity'];
+    public function processCheckout(Request $request)
+    {
+        $request->validate([
+            'product_id =>required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $product = Product::findOrFail($request->product_id);
+        if ($product->stock < $request->quantity) {
+            return back()->with('error', 'Not enough product in stock');
         }
 
-        // Simpan order di DB
+        $totalAmount = $product->price * $request->quantity;
         $order = Order::create([
             'user_id' => Auth::id(),
             'status' => 'pending',
-            'total_amount' => $total,
+            'total_amount' => $totalAmount,
         ]);
 
-        foreach ($products as $product) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $product['id'],
-                'quantity' => $product['quantity'],
-                'price' => $product['price'],
-            ]);
-        }
-
-        // Buat invoice ke Xendit
-        $response = Http::withBasicAuth(config('services.xendit.api_key'), '')
-            ->post('https://api.xendit.co/v2/invoices', [
-                'external_id' => 'order-' . $order->id,
-                'amount' => $order->total_amount,
-                'payer_email' => Auth::user()->email,
-                'description' => 'Pembayaran Order #' . $order->id,
-            ]);
-
-        $invoice = $response->json();
-
-        // Update order dengan invoice
-        $order->update([
-            'xendit_invoice_id' => $invoice['id'],
-            'xendit_invoice_url' => $invoice['invoice_url'],
+        $order->items()->create([
+            'product_id' => $product->id,
+            'quantity' => $request->quantity,
+            'price' => $product->price,
         ]);
 
-        // Redirect user ke halaman pembayaran
-        return redirect($invoice['invoice_url']);
-    }
+        $product->decrement('stock', $request->quantity);
 
-    // Callback dari Xendit
-    public function callback(Request $request)
-    {
-        $data = $request->all();
+        $payload = [
+            'external_id' => 'order-' . $order->id . '-' . Str::random(6),
+            'payer_email' => Auth::user()->email,
+            'description' => 'Pembayaran untuk Order #' . $order->id,
+            'amount' => $totalAmount,
+        ];
 
-        $order = Order::where('xendit_invoice_id', $data['id'])->first();
+        $secretKey = env('XENDIT_SECRET_KEYS');
 
-        if ($order) {
-            $order->update(['status' => strtolower($data['status'])]);
+        $response = Http::withBasicAuth($secretKey, '')
+            ->post('https://api.xendit.co/v2/invoices', $payload);
+
+        if ($response->successful()) {
+            $xenditInvoice = $response->json();
+
+            $order->xendit_invoice_id = $xenditInvoice['id'];
+            $order->save();
+
+            return redirect($xenditInvoice['invoice_url']);
+        } else {
+            
+            return back()->with('error', 'Gagal membuat invoice pembayaran. Silakan coba lagi.');
         }
-
-        return response()->json(['success' => true]);
     }
+
 }
