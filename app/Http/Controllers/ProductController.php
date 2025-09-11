@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -38,14 +40,23 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validate = $request->validate([
+            'image' => 'required|image|mimes:jpeg,jpg,png,webp|max:2048',
             'name'  => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
         ]);
 
-        Product::create($request->only('name', 'price', 'stock'));
+        $image = $request->file('image');
+        $imageName = $image->hashName();
+        $image->storeAs('public/images', $imageName());
 
+        Product::create([
+            'image' => $imageName,
+            'name'  => $validate['name'],
+            'price' => $validate['price'],
+            'stock' => $validate['stock'],
+        ]);
         return redirect()->route('products.index')
             ->with('success', 'Produk berhasil ditambahkan.');
     }
@@ -62,16 +73,26 @@ class ProductController extends Controller
     /**
      * Update data produk (admin).
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, Product $product)
     {
-        $request->validate([
+        $validate = $request->validate([
+            'image' => 'image|mimes:jpeg,jpg,png,webp|max:2048',
             'name'  => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
         ]);
 
-        $product = Product::findOrFail($id);
-        $product->update($request->only('name', 'price', 'stock'));
+
+        if ($request->hasFile('image')) {
+
+            $image = $request->file('image');
+            $imageName = $image->hashName();
+            $image->storeAs('public/images', $imageName);
+            Storage::delete('public/images/' . $product->image);
+            $validate['image'] = $imageName;
+        }
+
+        $product->update($validate);
 
         return redirect()->route('products.index')
             ->with('success', 'Produk berhasil diperbarui.');
