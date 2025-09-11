@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>Detail Produk</h1>
-
+    <img src="{{ $product->image }}" alt="{{ $product->name }}" width="400">
     <p><strong>Nama:</strong> {{ $product->name }}</p>
     <p><strong>Harga:</strong> Rp {{ number_format($product->price, 0, ',', '.') }}</p>
     <p><strong>Stok:</strong> {{ $product->stock }}</p>

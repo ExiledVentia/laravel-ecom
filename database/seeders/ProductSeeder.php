@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\Product;
-use Illuminate\Support\Str;
+use Faker\Factory as Faker;
 
 class ProductSeeder extends Seeder
 {
@@ -15,10 +15,15 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('products')->insert([
-            'name' => Str::random(10),
-            'price' => rand(1000, 100000),
-            'stock' => rand(1, 250),
-        ]);
+
+        $faker = Faker::create();
+        foreach (range(1, 50) as $index) {
+            Product::create([
+                'image' => 'https://picsum.photos/640/480?random='. $index,
+                'name' => $faker->words(3, true),
+                'price' => $faker->numberBetween(10000, 1000000),
+                'stock' => $faker->numberBetween(0, 250),
+            ]);
+        }
     }
 }
