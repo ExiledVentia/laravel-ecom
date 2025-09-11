@@ -50,7 +50,8 @@ Route::middleware('auth')->group(function () {
 
     // Orders (user)
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+
 
     // Profile & logout
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
