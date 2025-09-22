@@ -7,6 +7,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\NewPasswordController;
+use App\Http\Controllers\PasswordResetLinkController;
 use Illuminate\Support\Facades\Route;
 
 // --------------------
@@ -30,7 +32,7 @@ Route::get('/products/{product}', [ProductController::class, 'show'])->name('pro
 // --------------------
 // AUTH ROUTES
 // --------------------
-// OAuth (Google / GitHub)
+// OAuth
 Route::get('/auth/redirect/{provider}', [OAuthController::class, 'redirect'])->name('oauth.redirect');
 Route::get('/auth/callback/{provider}', [OAuthController::class, 'callback'])->name('oauth.callback');
 
@@ -40,6 +42,13 @@ Route::post('/auth/login', [AuthController::class, 'login'])->name('login');
 
 Route::get('/auth/register', [AuthController::class, 'showRegister'])->name('register.form');
 Route::post('/auth/register', [AuthController::class, 'register'])->name('register');
+
+
+Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+
+Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+Route::post('/reset-password', [ NewPasswordController::class, 'store'])->name('password.update');
 
 // --------------------
 // ORDER & CHECKOUT (protected)
