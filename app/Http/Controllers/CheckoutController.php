@@ -47,8 +47,8 @@ class CheckoutController extends Controller
             'description' => 'Pembayaran untuk Order #' . $order->id,
             'amount' => $totalAmount,
 
-            'success_redirect_url' => route('orders.show', $order),
-            'failure_redirect_url' => route('orders.show', $order),
+            'success_redirect_url' => route('orders.index', $order),
+            'failure_redirect_url' => route('orders.index', $order),
         ];
 
         $secretKey = env('XENDIT_SECRET_KEYS');

@@ -107,17 +107,15 @@ class OrderController extends Controller
      */
     public function callback(Request $request)
     {
-        $data = $request->all();
+        $data = $request->all(); 
 
-        $orderId = str_replace('order-', '', $data['external_id'] ?? '');
-        $order   = Order::find($orderId);
+        $order = Order::where('id', str_replace('order-', '', $data['external_id']))->first(); 
 
-        if ($order) {
-            $order->update([
-                'status' => $data['status'] ?? 'PENDING'
-            ]);
-        }
-
-        return response()->json(['success' => true]);
+        if ($order) { 
+        $order->status = $data['status']; 
+        $order->save(); 
+        } 
+ 
+        return response()->json(['status' => 'success']); 
     }
 }
