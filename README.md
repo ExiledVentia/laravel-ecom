@@ -13,5 +13,5 @@ A colaboration between amateurs to create a *horrid* laravel-based E-commerce Ap
 1. Git clone this into laragon's www directory.
 2. cd into the new directory and run 'composer install'
 3. copy the '.env.example' file and delete the .example part.
-4. Run the command 'php artisan key:generate' and change the filesystem_disk to public.
+4. Run the command 'php artisan key:generate', run 'php artisan storage:link' and change the filesystem_disk to public.
 5. Run 'php artisan migrate:fresh --seed' and enjoy this thing.
