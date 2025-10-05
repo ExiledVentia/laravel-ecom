@@ -3,8 +3,18 @@
 @section('content')
     <h1>Daftar Produk</h1>
 
+    <div>
+        <form action="{{ route('products.index') }}" method="GET">
+            <input type="text" name="search" placeholder="Cari produk..." value="{{ request('search') }}">
+            <button type="submit">Cari</button>
+            @if(request('search'))
+                <a href="{{ route('products.index') }}">Reset</a>
+            @endif
+        </form>
+    </div>
+
     @if (session('success'))
-        <p>{{ session('success') }}</p>
+            {{ session('success') }}
     @endif
 
     @if ($products->isEmpty())
@@ -28,8 +38,8 @@
                         <td>Rp {{ number_format($product->price, 0, ',', '.') }}</td>
                         <td>{{ $product->stock }}</td>
                         <td>
-                            <a href="{{ route('products.show', $product->id) }}">Detail</a> |
-                            <a href="{{ route('products.edit', $product->id) }}">Edit</a> |
+                            <a href="{{ route('products.show', $product->id) }}">Detail</a>
+                            <a href="{{ route('products.edit', $product->id) }}">Edit</a>
                             <form action="{{ route('products.destroy', $product->id) }}" method="POST"
                                 style="display:inline;">
                                 @csrf

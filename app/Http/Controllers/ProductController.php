@@ -12,9 +12,19 @@ class ProductController extends Controller
     /**
      * Menampilkan semua produk (public list).
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::latest()->paginate(10);
+        $search = $request->input('search');
+        
+        if ($search) {
+            $products = Product::where('name', 'like', '%' . $search . '%')
+                               ->latest()
+                               ->paginate(10)
+                               ->appends(['search' => $search]);
+        } else {
+            $products = Product::latest()->paginate(10);
+        }
+        
         return view('products.index', compact('products'));
     }
 
